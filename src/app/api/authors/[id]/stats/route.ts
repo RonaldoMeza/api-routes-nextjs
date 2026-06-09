@@ -1,5 +1,8 @@
 import { NextResponse } from 'next/server'
+import { Prisma } from '@prisma/client'
 import { prisma } from '@/lib/prisma'
+
+type BookWithRelations = Prisma.BookGetPayload<{}>
 
 export async function GET(
     request: Request,
@@ -20,11 +23,11 @@ export async function GET(
             )
         }
 
-        const books = author.books
+        const books = author.books as BookWithRelations[]
         const totalBooks = books.length
-        const years = books.filter((b: { publishedYear: number | null }) => b.publishedYear).map((b: { publishedYear: number | null }) => b.publishedYear!)
-        const pages = books.filter((b: { pages: number | null }) => b.pages).map((b: { pages: number | null }) => b.pages!)
-        const genres = [...new Set(books.filter((b: { genre: string | null }) => b.genre).map((b: { genre: string | null }) => b.genre!))]
+        const years = books.filter(b => b.publishedYear).map(b => b.publishedYear!)
+        const pages = books.filter(b => b.pages).map(b => b.pages!)
+        const genres = [...new Set(books.filter(b => b.genre).map(b => b.genre!))]
 
         const firstBook = years.length > 0
             ? books.find(b => b.publishedYear === Math.min(...years))
