@@ -12,6 +12,7 @@
 
 # testing
 /coverage
+log-vercel.txt
 
 # next.js
 /.next/
