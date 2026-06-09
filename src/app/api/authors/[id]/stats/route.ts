@@ -1,8 +1,5 @@
 import { NextResponse } from 'next/server'
-import { Prisma } from '@prisma/client'
 import { prisma } from '@/lib/prisma'
-
-type BookWithRelations = Prisma.BookGetPayload<{}>
 
 export async function GET(
     request: Request,
@@ -23,7 +20,9 @@ export async function GET(
             )
         }
 
-        const books = author.books as BookWithRelations[]
+        type BookItem = { title: string; publishedYear: number | null; genre: string | null; pages: number | null }
+
+        const books = author.books as BookItem[]
         const totalBooks = books.length
         const years = books.filter(b => b.publishedYear).map(b => b.publishedYear!)
         const pages = books.filter(b => b.pages).map(b => b.pages!)
